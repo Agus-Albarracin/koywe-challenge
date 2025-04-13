@@ -69,7 +69,6 @@ export default function Home() {
 
   const handleLogout = () => {
     Cookies.remove('KOWEY-TOKEN-SWAP');
-    localStorage.removeItem('KOWEY-TOKEN-SWAP');
     router.push('/');
   };
 

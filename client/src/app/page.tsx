@@ -26,7 +26,6 @@ export default function Login() {
       } else {
         const res = await authService.login(login, password);
         toast.success('Inicio de sesión exitoso');
-        localStorage.setItem('KOWEY-TOKEN-SWAP', res.access_token);
         Cookies.set('KOWEY-TOKEN-SWAP', res.access_token, {
           path: '/',
           expires: 1,
