@@ -28,12 +28,14 @@ export class SanitizePipe implements PipeTransform {
       // Sanitiza un string simple
       return sanitizeHtml(value);
     }
-
+    if (Array.isArray(value)) {
+      // Sanitiza cada elemento del array
+      return value.map(item => this.transform(item, _metadata));
+    }
     if (typeof value === 'object' && value !== null) {
       // Sanitiza un objeto recorriendo cada propiedad
       return this.sanitizeObject(value);
     }
-
     // Devuelve tal cual si no es string ni objeto (ej: números, booleanos)
     return value;
   }
@@ -48,10 +50,11 @@ export class SanitizePipe implements PipeTransform {
         typeof val === 'string'
           ? sanitizeHtml(val) // Sanitiza strings individuales
           : typeof val === 'object' && val !== null
-            ? this.sanitizeObject(val) // Llama recursivamente si es un objeto anidado
-            : val; // Deja valores no string ni objeto sin modificar
+          ? this.sanitizeObject(val) // Llama recursivamente si es un objeto anidado
+          : val; // Deja valores no string ni objeto sin modificar
     }
 
     return sanitized;
   }
 }
+
