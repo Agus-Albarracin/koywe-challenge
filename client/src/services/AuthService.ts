@@ -32,5 +32,12 @@ export const authService = {
       console.error('Registration error:', error);  
       throw error;  
     }  
+  },
+  async logout(): Promise<void> {
+    if (!BASE_URL) throw new Error('La URL de la api no esta siendo procesada');
+
+    await axios.post(`${BASE_URL}/auth/logout`, {}, {
+      withCredentials: true,
+    });
   },  
 };
