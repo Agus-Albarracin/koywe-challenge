@@ -6,7 +6,7 @@
  * 
  *  Responsabilidades:
  * - Extraer el token JWT desde el header Authorization (Bearer token) 
- *   o desde una cookie llamada 'KOWEY-TOKEN-SWAP'.
+ *   o desde una cookie llamada 'access_token'.
  * - Utilizar la clave secreta (`JWT_SECRET`) definida en las variables de entorno 
  *   para verificar la validez del token.
  * - Si el token es válido y no ha expirado, expone el payload (sub y email) al contexto de autenticación.
@@ -29,7 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromExtractors([
         ExtractJwt.fromAuthHeaderAsBearerToken(),
         (req: Request) => {
-          return req?.cookies?.['KOWEY-TOKEN-SWAP']
+          return req?.cookies?.['access_token']
         }
       ]),
       secretOrKey: process.env.JWT_SECRET || (() => {  
