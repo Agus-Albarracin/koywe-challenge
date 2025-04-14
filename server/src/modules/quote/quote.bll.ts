@@ -58,6 +58,7 @@ export class QuoteBLL {
       to: dto.to,
       amount: amount.toNumber(),
       rate: rate.toNumber(),
+      userId: dto.userId, 
       convertedAmount: convertedAmount.toNumber(),
       timestamp: now,
       expiresAt: expiresAt,

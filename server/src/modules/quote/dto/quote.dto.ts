@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString, IsOptional } from 'class-validator';
 
 export class QuoteDto {
   @IsNumber()
@@ -9,4 +9,8 @@ export class QuoteDto {
 
   @IsString()
   to: string;
+
+  @IsOptional()
+  @IsString()
+  userId?: string;
 }
