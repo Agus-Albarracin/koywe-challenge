@@ -9,7 +9,7 @@ if (!SECRET_KEY) {
 } 
 
 export async function middleware(request: NextRequest) {
-  const token = request.cookies.get('KOWEY-TOKEN-SWAP')?.value;
+  const token = request.cookies.get('access_token')?.value;
   const pathname = request.nextUrl.pathname;
 
   // Si no hay token y se quiere acceder a /home, redirige
@@ -21,8 +21,10 @@ export async function middleware(request: NextRequest) {
   if (token) {
     try {
       // Verificar el token usando `jose`
-      await jwtVerify(token, new TextEncoder().encode(SECRET_KEY));
-
+      const { payload } = await jwtVerify(token, new TextEncoder().encode(SECRET_KEY))
+      if (payload.exp && Date.now() >= payload.exp * 1000) {
+        throw new Error('Token expirado');
+      }
       // Si el token es válido, continúa
       return NextResponse.next();
     } catch (err) {

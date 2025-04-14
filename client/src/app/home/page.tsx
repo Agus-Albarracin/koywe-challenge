@@ -3,10 +3,11 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createQuote, getQuoteById } from '@/services/QuoteService';
 import { getCurrencies } from '@/services/ApiServices'
+import { authService } from '@/services/AuthService';
 import { QuoteResponse } from '@/models/quote/quote';
 import { CurrenciesResponse } from '@/models/currencies/CurrenciesResponse';
 import Image from 'next/image';
-import Cookies from 'js-cookie';
+import { toast } from 'react-toastify'
 
 export default function Home() {
   const router = useRouter();
@@ -35,6 +36,14 @@ export default function Home() {
       const trimmedAmount = amount.trim();
       const trimmedFrom = from.trim().toUpperCase();
       const trimmedTo = to.trim().toUpperCase();
+      if (!trimmedAmount) {  
+        toast.warning('Por favor ingrese un monto para cotizar');  
+        return;  
+      }
+      if (!trimmedFrom || !trimmedTo) {  
+        toast.warning('Por favor complete los datos de divisa para cotizar');  
+        return;  
+      }
   
       const data = await createQuote({
         amount: parseFloat(trimmedAmount),
@@ -44,27 +53,30 @@ export default function Home() {
   
       setQuoteResult(data);
     } catch (error) {
-      alert('Error al crear la cotización');
+      toast.error('Error al crear la cotización');
       console.error(error);
     }
   };
   
-  const handleGetQuote = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const trimmedId = quoteId.trim();
-      const data = await getQuoteById(trimmedId);
-      setQuoteDetails(data);
-      setQuoteId('');
-    } catch (error) {
-      alert('Cotización no encontrada o expirada');
-      console.error(error);
-    }
-  };
+  const handleGetQuote = async (e: React.FormEvent) => {  
+    e.preventDefault();  
+    try {  
+      const trimmedId = quoteId.trim();  
+      if (!trimmedId) {  
+        toast.warning('Por favor ingrese un ID de cotización');  
+        return;  
+      }  
+      const data = await getQuoteById(trimmedId);  
+      setQuoteDetails(data);  
+      setQuoteId('');  
+    } catch (error) {  
+      toast.warning('Cotización no encontrada o expirada');  
+      console.error(error);  
+    }  
+  };  
 
-  const handleLogout = () => {
-    Cookies.remove('KOWEY-TOKEN-SWAP');
-    localStorage.removeItem('KOWEY-TOKEN-SWAP');
+  const handleLogout = async () => {
+    await authService.logout();
     router.push('/');
   };
 

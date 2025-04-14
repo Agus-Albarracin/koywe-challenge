@@ -16,9 +16,11 @@ import * as cors from 'cors';
 import helmet from 'helmet';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { SanitizePipe } from './common/pipes/sanitize.pipe';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(cookieParser());
   app.use(
     cors({
       origin: process.env.FRONT_URL,
@@ -42,18 +44,23 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  await app.listen(process.env.PORT_SERVER ?? 8000,
-    () => { console.log (`
+try {
+  const port = process.env.PORT_SERVER ?? 8000;
+  await app.listen(port);
+  console.log(`
 ╔═════════════════════════════════════════════════╗
 
-       🟢 SERVIDOR ONLINE EN EL PUERTO: ${process.env.PORT_SERVER}
+       🟢 SERVIDOR ONLINE EN EL PUERTO: ${port}
        📅 Fecha: ${new Date().toLocaleString()}
        
        ☕ Que tengas un lindo día...
 
 ╚═════════════════════════════════════════════════╝
-      `)}
-  );
+  `);
+} catch (error) {
+  console.error('Failed to start server:', error);
+  process.exit(1);
+}
 }
 
 bootstrap();

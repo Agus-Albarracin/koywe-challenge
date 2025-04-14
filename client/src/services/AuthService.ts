@@ -7,12 +7,16 @@ export const authService = {
   async login(username: string, password: string): Promise<SigninResponse> {  
     try {  
       if (!BASE_URL) {  
-        throw new Error('API URL is not defined');  
+        throw new Error('No se encontró la API URL');  
       }  
-      const response = await axios.post(`${BASE_URL}/auth/signin`, { username, password });  
-      return response.data;  
+      const response = await axios.post(
+        `${BASE_URL}/auth/signin`,
+        { username, password },
+        { withCredentials: true } 
+      );
+      return response.data;
     } catch (error) {  
-      console.error('Login error:', error);  
+      console.error('Hubo un error en el login:', error);  
       throw error;  
     }  
   },  
@@ -20,7 +24,7 @@ export const authService = {
   async register(email: string, password: string, username: string): Promise<SignupResponse> {  
     try {  
       if (!BASE_URL) {  
-        throw new Error('API URL is not defined');  
+        throw new Error('No se encontró la API URL');  
       }  
       const response = await axios.post(`${BASE_URL}/auth/signup`, {  
         email,  
@@ -29,8 +33,15 @@ export const authService = {
       });  
       return response.data;  
     } catch (error) {  
-      console.error('Registration error:', error);  
+      console.error('Se encontró un problema:', error);  
       throw error;  
     }  
+  },
+  async logout(): Promise<void> {
+    if (!BASE_URL) throw new Error('La URL de la api no esta siendo procesada');
+
+    await axios.post(`${BASE_URL}/auth/logout`, {}, {
+      withCredentials: true,
+    });
   },  
 };
