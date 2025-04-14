@@ -16,9 +16,11 @@ import * as cors from 'cors';
 import helmet from 'helmet';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { SanitizePipe } from './common/pipes/sanitize.pipe';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(cookieParser());
   app.use(
     cors({
       origin: process.env.FRONT_URL,
