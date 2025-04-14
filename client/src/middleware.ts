@@ -9,7 +9,7 @@ if (!SECRET_KEY) {
 } 
 
 export async function middleware(request: NextRequest) {
-  const token = request.cookies.get('KOWEY-TOKEN-SWAP')?.value;
+  const token = request.cookies.get('access_token')?.value;
   const pathname = request.nextUrl.pathname;
 
   // Si no hay token y se quiere acceder a /home, redirige
