@@ -6,6 +6,7 @@ import Image from 'next/image';
 import logo from '../../public/koywe2.svg';
 import { authService } from '@/services/AuthService';
 import { toast } from 'react-toastify';
+import { validateAuthForm } from './utils/validation';
 
 export default function Login() {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -13,10 +14,12 @@ export default function Login() {
   const router = useRouter();
 
   const onSubmit = async (data: any) => {
-    
     const email = data?.email?.trim();
     const password = data.password;
     const login = data?.login?.trim();
+
+    const isValid = validateAuthForm(login, password, email, isRegistering);
+    if (!isValid) return;
 
     try {
       if (isRegistering) {
@@ -54,7 +57,6 @@ export default function Login() {
 
         <input
           {...register('login')}
-          required 
           placeholder="Usuario"
           className="p-3 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[var(--color-secundario)]"
         />
@@ -62,7 +64,6 @@ export default function Login() {
         {isRegistering && (
           <input
             {...register('email')}
-            required 
             type="email"
             placeholder="Email"
             className="p-3 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[var(--color-secundario)]"
@@ -70,18 +71,7 @@ export default function Login() {
         )}
 
         <input  
-          {...register('password', { 
-            required: true,  
-            minLength: {  
-              value: 6,  
-              message: "La contraseña debe tener al menos 6 caracteres"  
-            },  
-            pattern: {  
-              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,  
-              message: "La contraseña debe incluir al menos una letra mayúscula, una minúscula, un número y un carácter especial"  
-            }  
-          })}  
-          required 
+          {...register('password')}  
           type="password"  
           placeholder="Contraseña"  
           className="p-3 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[var(--color-secundario)]"  
