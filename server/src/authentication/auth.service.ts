@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException, ConflictException} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../modules/user/user.service';
+import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -26,7 +27,7 @@ export class AuthService {
     return { message: 'Se creo el usuario exitosamente', user };  
   }
 
-  async signin(username: string, password: string) {  
+  async signin(username: string, password: string, res: Response): Promise<{ access_token: string }> { 
     const user = await this.userService.findByUsername(username);  
 
     if (!user) {  
@@ -41,6 +42,14 @@ export class AuthService {
 
     const payload = { sub: user.id, email: user.email };  
     const token = this.jwtService.sign(payload, { expiresIn: '1h' });
+
+    res.cookie('access_token', token, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: false,
+      maxAge: 600000, // 10 minutos
+    });
+
     return { access_token: token };  
   } 
 }
