@@ -47,11 +47,13 @@ Se aprovechó para el diseño del servicio y tipado, ya que las instrucciones de
 
 [Documentacion NEST.js + Prisma:](https://docs.nestjs.com/recipes/prisma)
 
-Ejemplo: UserService usando tipos inferidos dinámicamente
-ts
-Copiar
-Editar
+
+```bash
+
+#Ejemplo: UserService usando tipos inferidos dinámicamente
 export type Users = Awaited<ReturnType<typeof prisma.user.findFirst>>;
+
+```
 ¿Por qué es útil este enfoque?
 Tipos fuertemente tipados y sincronizados con la base de datos sin necesidad de duplicar interfaces manualmente.
 
